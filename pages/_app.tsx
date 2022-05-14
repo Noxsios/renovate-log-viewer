@@ -2,7 +2,6 @@ import "@fontsource/fira-code";
 import "@fontsource/montserrat";
 import "@fontsource/recursive";
 import "../styles/globals.css";
-import "react-virtualized/styles.css";
 import theme from "../styles/theme";
 import { AppProps } from "next/app";
 import { MantineProvider } from "@mantine/core";
