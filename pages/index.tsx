@@ -3,9 +3,8 @@ import Head from "next/head";
 import Drop from "../components/Drop";
 import { useState } from "react";
 import FullscreenLogViewer from "../components/FullscreenLogViewer";
-import { Button, Stack, Container, Title, Center, Text, Box } from "@mantine/core";
+import { Button, Stack, Container, Title, Text, Box } from "@mantine/core";
 import { FileOff } from "tabler-icons-react";
-import DataTable from "../components/DataTable";
 import ProgressiveTable from "../components/ProgressiveTable";
 
 const Home: NextPage = () => {
@@ -37,12 +36,9 @@ const Home: NextPage = () => {
               <FullscreenLogViewer logs={logs} title="View Raw JSON (slow)" />
             </Stack>
           </Container>
+          <ProgressiveTable logs={logs} />
         </>
       )}
-      {/* <div style={{ backdropFilter: "blur(4px)", height: "100%", flex: 1, paddingTop: "1rem" }} id="datatable-container">
-        <DataTable logs={logs} />
-      </div> */}
-      {logs.length > 0 && <ProgressiveTable logs={logs} />}
     </>
   );
 };
