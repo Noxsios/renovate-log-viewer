@@ -6,6 +6,7 @@ import FullscreenLogViewer from "../components/FullscreenLogViewer";
 import { Button, Stack, Container, Title, Center, Text, Box } from "@mantine/core";
 import { FileOff } from "tabler-icons-react";
 import DataTable from "../components/DataTable";
+import ProgressiveTable from "../components/ProgressiveTable";
 
 const Home: NextPage = () => {
   const [logs, setLogs] = useState([] as RenovateLogs);
@@ -38,10 +39,10 @@ const Home: NextPage = () => {
           </Container>
         </>
       )}
-      <div style={{ backdropFilter: "blur(4px)", height: "100%", flex: 1, paddingTop: "1rem" }} id="datatable-container">
+      {/* <div style={{ backdropFilter: "blur(4px)", height: "100%", flex: 1, paddingTop: "1rem" }} id="datatable-container">
         <DataTable logs={logs} />
-      </div>
-      {/* <DataTable logs={logs} /> */}
+      </div> */}
+      {logs.length > 0 && <ProgressiveTable logs={logs} />}
     </>
   );
 };

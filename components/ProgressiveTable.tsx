@@ -1,7 +1,7 @@
-import { Code, Table, Tooltip, LoadingOverlay, Input, Container } from "@mantine/core";
+import { Code, Table, Tooltip, LoadingOverlay, TextInput, Container, Box, Select, Text, Pagination } from "@mantine/core";
 import FullscreenLogViewer from "../components/FullscreenLogViewer";
 import React, { useEffect, useMemo, useState } from "react";
-import { useTable, useFilters, useGlobalFilter, useAsyncDebounce } from "react-table";
+import { useTable, usePagination, useGlobalFilter, useAsyncDebounce } from "react-table";
 import { Search } from "tabler-icons-react";
 
 interface StaticTableProps {
@@ -17,7 +17,7 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
 
   return (
     <Container size={"sm"} p={"md"}>
-      <Input
+      <TextInput
         value={value || ""}
         onChange={(e) => {
           setValue(e.target.value);
@@ -69,13 +69,23 @@ const StaticTable = (props: StaticTableProps) => {
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, state, prepareRow, preGlobalFilteredRows, setGlobalFilter } = useTable(
-    { columns, data },
-    useGlobalFilter
-  );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    pageOptions,
+    gotoPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+    state,
+    prepareRow,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+  } = useTable({ columns, data, initialState: { pageIndex: 0 } }, useGlobalFilter, usePagination);
 
   return (
-    <>
+    <Box mb={"5rem"}>
       <LoadingOverlay visible={data.length === 0} />
       <GlobalFilter preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
       <Table {...getTableProps()} sx={{ backdropFilter: "blur(8px)" }}>
@@ -91,7 +101,7 @@ const StaticTable = (props: StaticTableProps) => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, idx: number) => {
+          {page.map((row, idx: number) => {
             prepareRow(row);
             return (
               <tr key={idx} {...row.getRowProps()}>
@@ -107,7 +117,39 @@ const StaticTable = (props: StaticTableProps) => {
           })}
         </tbody>
       </Table>
-    </>
+      <Box sx={{ display: "flex", backdropFilter: "blur(4px)", justifyContent: "space-around" }}>
+        <Text color={"dimmed"}>
+          Page
+          <strong style={{ margin: "0 0.5rem" }}>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>
+        </Text>
+        <Pagination
+          page={pageIndex.toString()}
+          onChange={(e) => {
+            gotoPage(e - 1);
+          }}
+          total={pageOptions.length}
+          withControls={true}
+          radius="md"
+          size="sm"
+          withEdges
+          siblings={3}
+        />
+        <Select
+          value={String(pageSize)}
+          onChange={(pageSize) => {
+            setPageSize(pageSize);
+          }}
+          data={[
+            { label: "Show 10", value: "10" },
+            { label: "Show 25", value: "25" },
+            { label: "Show 50", value: "50" },
+          ]}
+          size={"xs"}
+        />
+      </Box>
+    </Box>
   );
 };
 
