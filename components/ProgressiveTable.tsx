@@ -1,10 +1,34 @@
-import { Code, Table, Tooltip, LoadingOverlay } from "@mantine/core";
+import { Code, Table, Tooltip, LoadingOverlay, Input, Container } from "@mantine/core";
 import FullscreenLogViewer from "../components/FullscreenLogViewer";
 import React, { useEffect, useMemo, useState } from "react";
-import { useTable } from "react-table";
+import { useTable, useFilters, useGlobalFilter, useAsyncDebounce } from "react-table";
+import { Search } from "tabler-icons-react";
 
 interface StaticTableProps {
   logs: RenovateLogs;
+}
+
+function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(globalFilter);
+  const onChange = useAsyncDebounce((value) => {
+    setGlobalFilter(value || undefined);
+  }, 200);
+
+  return (
+    <Container size={"sm"} p={"md"}>
+      <Input
+        value={value || ""}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`${count} records...`}
+        size={"xl"}
+        icon={<Search />}
+      />
+    </Container>
+  );
 }
 
 const StaticTable = (props: StaticTableProps) => {
@@ -45,11 +69,15 @@ const StaticTable = (props: StaticTableProps) => {
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data });
+  const { getTableProps, getTableBodyProps, headerGroups, rows, state, prepareRow, preGlobalFilteredRows, setGlobalFilter } = useTable(
+    { columns, data },
+    useGlobalFilter
+  );
 
   return (
     <>
       <LoadingOverlay visible={data.length === 0} />
+      <GlobalFilter preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
       <Table {...getTableProps()} sx={{ backdropFilter: "blur(8px)" }}>
         <thead>
           {headerGroups.map((headerGroup, idx: number) => (
