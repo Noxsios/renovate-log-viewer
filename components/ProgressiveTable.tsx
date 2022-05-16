@@ -1,8 +1,8 @@
 import { Code, Table, Tooltip, LoadingOverlay, TextInput, Container, Box, Select, Text, Pagination } from "@mantine/core";
-import FullscreenLogViewer from "../components/FullscreenLogViewer";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTable, usePagination, useGlobalFilter, useAsyncDebounce } from "react-table";
 import { Search } from "tabler-icons-react";
+import RawViewer from "./RawViewer";
 
 interface StaticTableProps {
   logs: RenovateLogs;
@@ -41,7 +41,7 @@ const StaticTable = (props: StaticTableProps) => {
           index: <Code>{index}</Code>,
           time: <Tooltip label={log.time}>{new Date(log.time).toLocaleTimeString()}</Tooltip>,
           msg: log.msg,
-          raw: <FullscreenLogViewer logs={log} title="JSON" />,
+          raw: <RawViewer logs={log} title="JSON" size={"xl"} />,
         };
       })
     );
@@ -85,7 +85,7 @@ const StaticTable = (props: StaticTableProps) => {
   } = useTable({ columns, data, initialState: { pageIndex: 0 } }, useGlobalFilter, usePagination);
 
   return (
-    <Box mb={"5rem"}>
+    <Box mb={"5rem"} mx="xs">
       <LoadingOverlay visible={data.length === 0} />
       <GlobalFilter preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
       <Table {...getTableProps()} sx={{ backdropFilter: "blur(8px)" }}>

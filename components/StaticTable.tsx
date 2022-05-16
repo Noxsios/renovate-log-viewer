@@ -1,5 +1,5 @@
 import { Code, Table, Tooltip } from "@mantine/core";
-import FullscreenLogViewer from "../components/FullscreenLogViewer";
+import RawViewer from "./RawViewer";
 import { useMemo } from "react";
 
 interface StaticTableProps {
@@ -20,7 +20,7 @@ const StaticTable = (props: StaticTableProps) => {
             </td>
             <td>{log.msg}</td>
             <td>
-              <FullscreenLogViewer logs={log} title="JSON" />
+              <RawViewer logs={log} title="JSON" size="lg" />
             </td>
           </tr>
         );

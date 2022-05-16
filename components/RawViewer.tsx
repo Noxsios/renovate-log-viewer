@@ -2,12 +2,13 @@ import { Button, Modal, useMantineTheme } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import React, { useState } from "react";
 
-interface FullscreenLogViewerProps {
+interface RawViewerProps {
   logs: RenovateLogs;
   title: string;
+  size: string | number;
 }
 
-const FullscreenLogViewer = (props: FullscreenLogViewerProps) => {
+const RawViewer = (props: RawViewerProps) => {
   const theme = useMantineTheme();
   const [isOpened, setisOpened] = useState(false);
 
@@ -17,7 +18,9 @@ const FullscreenLogViewer = (props: FullscreenLogViewerProps) => {
 
   return (
     <>
-      <Button onClick={() => setisOpened(true)}>{props.title}</Button>
+      <Button onClick={() => setisOpened(true)} color="violet">
+        {props.title}
+      </Button>
       <Modal
         overlayColor={theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2]}
         overlayOpacity={0.55}
@@ -25,7 +28,7 @@ const FullscreenLogViewer = (props: FullscreenLogViewerProps) => {
         opened={isOpened}
         onClose={() => setisOpened(false)}
         overflow={"inside"}
-        size={"full"}
+        size={props.size}
       >
         <Prism language="json">{code}</Prism>
       </Modal>
@@ -33,4 +36,4 @@ const FullscreenLogViewer = (props: FullscreenLogViewerProps) => {
   );
 };
 
-export default FullscreenLogViewer;
+export default RawViewer;

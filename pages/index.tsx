@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from "next/head";
 import Drop from "../components/Drop";
 import { useState } from "react";
-import FullscreenLogViewer from "../components/FullscreenLogViewer";
+import RawViewer from "../components/RawViewer";
 import { Button, Stack, Container, Title, Text, Box } from "@mantine/core";
 import { FileOff } from "tabler-icons-react";
 import ProgressiveTable from "../components/ProgressiveTable";
@@ -24,7 +24,11 @@ const Home: NextPage = () => {
           <Text color={"dimmed"}>A tool to view renovate logs.</Text>
         </Box>
       </Container>
-      {logs.length === 0 && <Drop setLogs={setLogs} />}
+      {logs.length === 0 && (
+        <Container>
+          <Drop setLogs={setLogs} />
+        </Container>
+      )}
 
       {logs.length > 0 && (
         <>
@@ -33,7 +37,7 @@ const Home: NextPage = () => {
               <Button variant="light" onClick={() => setLogs([])} rightIcon={<FileOff />} color="gray">
                 Upload a new log file
               </Button>
-              <FullscreenLogViewer logs={logs} title="View Raw JSON (slow)" />
+              <RawViewer logs={logs} title="View Raw JSON (slow)" size={"full"} />
             </Stack>
           </Container>
           <ProgressiveTable logs={logs} />
