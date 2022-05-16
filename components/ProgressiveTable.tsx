@@ -1,8 +1,8 @@
-import { Code, Table, Tooltip, LoadingOverlay, TextInput, Container, Box, Select, Text, Pagination } from "@mantine/core";
-import React, { useEffect, useMemo, useState } from "react";
-import { useTable, usePagination, useGlobalFilter, useAsyncDebounce } from "react-table";
-import { Search } from "tabler-icons-react";
-import RawViewer from "./RawViewer";
+import { Code, Table, Tooltip, TextInput, Container, Box, Select, Text, Pagination } from "@mantine/core";
+import { Prism } from "@mantine/prism";
+import React, { useEffect, useMemo, useState, useRef } from "react";
+import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
+import { ChevronDown, ChevronRight, Search } from "tabler-icons-react";
 
 interface StaticTableProps {
   logs: RenovateLogs;
@@ -33,15 +33,15 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
 
 const StaticTable = (props: StaticTableProps) => {
   const [data, setData] = useState<Object[]>([]);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     setData(
       props.logs.map((log: any, index) => {
         return {
-          index: <Code>{index}</Code>,
           time: <Tooltip label={log.time}>{new Date(log.time).toLocaleTimeString()}</Tooltip>,
-          msg: log.msg,
-          raw: <RawViewer logs={log} title="JSON" size={"xl"} />,
+          msg: <Code>{log.msg}</Code>,
+          raw: log,
         };
       })
     );
@@ -50,8 +50,14 @@ const StaticTable = (props: StaticTableProps) => {
   const columns = useMemo(
     () => [
       {
-        Header: "#",
-        accessor: "index",
+        Header: () => null,
+        id: "expander",
+        Cell: ({ row }) => (
+          // Use Cell to render an expander for each row.
+          // We can use the getToggleRowExpandedProps prop-getter
+          // to build the expander.
+          <span {...row.getToggleRowExpandedProps()}>{row.isExpanded ? <ChevronDown /> : <ChevronRight />}</span>
+        ),
       },
       {
         Header: "Time",
@@ -61,12 +67,13 @@ const StaticTable = (props: StaticTableProps) => {
         Header: "Message",
         accessor: "msg",
       },
-      {
-        Header: "Raw",
-        accessor: "raw",
-      },
     ],
     []
+  );
+
+  const renderRowSubComponent = React.useCallback(
+    ({ row }) => <Prism language="json">{JSON.stringify(data[row.index]["raw"], null, 2)}</Prism>,
+    [data]
   );
 
   const {
@@ -82,20 +89,18 @@ const StaticTable = (props: StaticTableProps) => {
     prepareRow,
     preGlobalFilteredRows,
     setGlobalFilter,
-  } = useTable({ columns, data, initialState: { pageIndex: 0 } }, useGlobalFilter, usePagination);
+    visibleColumns,
+  } = useTable({ columns, data, initialState: { pageIndex: 0 } }, useGlobalFilter, useExpanded, usePagination);
 
   return (
     <Box mb={"5rem"} mx="xs">
-      <LoadingOverlay visible={data.length === 0} />
       <GlobalFilter preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
-      <Table {...getTableProps()} sx={{ backdropFilter: "blur(8px)" }}>
+      <Table {...getTableProps()} sx={{ backdropFilter: "blur(8px)" }} ref={tableRef}>
         <thead>
           {headerGroups.map((headerGroup, idx: number) => (
-            <tr key={idx} {...headerGroup.getHeaderGroupProps()}>
+            <tr key={headerGroup.getHeaderGroupProps().key}>
               {headerGroup.headers.map((column, idx: number) => (
-                <th key={idx} {...column.getHeaderProps()}>
-                  {column.render("Header")}
-                </th>
+                <th key={column.getHeaderProps().key}>{column.render("Header")}</th>
               ))}
             </tr>
           ))}
@@ -104,15 +109,31 @@ const StaticTable = (props: StaticTableProps) => {
           {page.map((row, idx: number) => {
             prepareRow(row);
             return (
-              <tr key={idx} {...row.getRowProps()}>
-                {row.cells.map((cell, idx: number) => {
-                  return (
-                    <td key={idx} {...cell.getCellProps()}>
-                      {cell.render("Cell")}
+              <React.Fragment key={row.getRowProps().key}>
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell, idx) => {
+                    return <td key={cell.getCellProps().key}>{cell.render("Cell")}</td>;
+                  })}
+                </tr>
+                {/*
+                    If the row is in an expanded state, render a row with a
+                    column that fills the entire length of the table.
+                  */}
+                {row.isExpanded ? (
+                  <tr>
+                    <td colSpan={visibleColumns.length}>
+                      {/*
+                          Inside it, call our renderRowSubComponent function. In reality,
+                          you could pass whatever you want as props to
+                          a component like this, including the entire
+                          table instance. But for this example, we'll just
+                          pass the row
+                        */}
+                      {renderRowSubComponent({ row })}
                     </td>
-                  );
-                })}
-              </tr>
+                  </tr>
+                ) : null}
+              </React.Fragment>
             );
           })}
         </tbody>

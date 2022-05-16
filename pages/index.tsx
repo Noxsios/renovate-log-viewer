@@ -3,9 +3,11 @@ import Head from "next/head";
 import Drop from "../components/Drop";
 import { useState } from "react";
 import RawViewer from "../components/RawViewer";
-import { Button, Stack, Container, Title, Text, Box } from "@mantine/core";
+import { Button, Stack, Container, Title, Text, Box, LoadingOverlay } from "@mantine/core";
 import { FileOff } from "tabler-icons-react";
-import ProgressiveTable from "../components/ProgressiveTable";
+import { lazy, Suspense } from "react";
+
+const ProgressiveTable = lazy(() => import("../components/ProgressiveTable"));
 
 const Home: NextPage = () => {
   const [logs, setLogs] = useState([] as RenovateLogs);
@@ -31,7 +33,7 @@ const Home: NextPage = () => {
       )}
 
       {logs.length > 0 && (
-        <>
+        <Suspense fallback={<LoadingOverlay visible={true} />}>
           <Container>
             <Stack px={"2rem"}>
               <Button variant="light" onClick={() => setLogs([])} rightIcon={<FileOff />} color="gray">
@@ -41,7 +43,7 @@ const Home: NextPage = () => {
             </Stack>
           </Container>
           <ProgressiveTable logs={logs} />
-        </>
+        </Suspense>
       )}
     </>
   );
