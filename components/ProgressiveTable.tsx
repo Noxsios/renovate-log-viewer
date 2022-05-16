@@ -11,7 +11,7 @@ interface StaticTableProps {
 function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
+  const onChange = useAsyncDebounce((value: string) => {
     setGlobalFilter(value || undefined);
   }, 200);
 
@@ -125,7 +125,7 @@ const StaticTable = (props: StaticTableProps) => {
           </strong>
         </Text>
         <Pagination
-          page={pageIndex.toString()}
+          page={pageIndex ? pageIndex + 1 : 1}
           onChange={(e) => {
             gotoPage(e - 1);
           }}
@@ -139,7 +139,7 @@ const StaticTable = (props: StaticTableProps) => {
         <Select
           value={String(pageSize)}
           onChange={(pageSize) => {
-            setPageSize(pageSize);
+            setPageSize(Number(pageSize) || 10);
           }}
           data={[
             { label: "Show 10", value: "10" },
