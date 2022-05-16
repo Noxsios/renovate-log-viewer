@@ -1,4 +1,4 @@
-import { Code, Table, Tooltip, TextInput, Container, Box, Select, Text, Pagination } from "@mantine/core";
+import { Code, Table, Tooltip, TextInput, Container, Box, Select, Text, Pagination, useMantineTheme } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
@@ -34,13 +34,18 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
 const StaticTable = (props: StaticTableProps) => {
   const [data, setData] = useState<Object[]>([]);
   const tableRef = useRef(null);
+  const theme = useMantineTheme();
 
   useEffect(() => {
     setData(
       props.logs.map((log: any, index) => {
         return {
-          time: <Tooltip label={log.time}>{new Date(log.time).toLocaleTimeString()}</Tooltip>,
-          msg: <Code>{log.msg}</Code>,
+          time: (
+            <Tooltip label={log.time}>
+              <Code sx={{ backgroundColor: theme.colors.gray[8], color: theme.colors.grape[2] }}>{new Date(log.time).toLocaleTimeString()}</Code>
+            </Tooltip>
+          ),
+          msg: <Text sx={{ color: theme.colors.yellow[5] }}>{log.msg}</Text>,
           raw: log,
         };
       })
@@ -52,12 +57,16 @@ const StaticTable = (props: StaticTableProps) => {
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }) => (
-          // Use Cell to render an expander for each row.
-          // We can use the getToggleRowExpandedProps prop-getter
-          // to build the expander.
-          <span {...row.getToggleRowExpandedProps()}>{row.isExpanded ? <ChevronDown /> : <ChevronRight />}</span>
-        ),
+        Cell: ({ row }) => {
+          return (
+            // Use Cell to render an expander for each row.
+            // We can use the getToggleRowExpandedProps prop-getter
+            // to build the expander.
+            <span {...row.getToggleRowExpandedProps()}>
+              {row.isExpanded ? <ChevronDown color={theme.colors.green[5]} /> : <ChevronRight color={theme.colors.blue[5]} size={25} />}
+            </span>
+          );
+        },
       },
       {
         Header: "Time",

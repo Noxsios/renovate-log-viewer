@@ -3,8 +3,8 @@
 }
 
 body {
-  background-color: #dbdee5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='72' viewBox='0 0 36 72'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a1a4b5' fill-opacity='0.24'%3E%3Cpath d='M2 6h12L8 18 2 6zm18 36h12l-6 12-6-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-color: #7381a3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='72' viewBox='0 0 36 72'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%237381a3' fill-opacity='0.24'%3E%3Cpath d='M2 6h12L8 18 2 6zm18 36h12l-6 12-6-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 ::-webkit-scrollbar {
@@ -23,4 +23,18 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+:root {
+  /* color scheme, here for VScode's pallete tool */
+  --0: #fafaf9;
+  --1: #f5f5f4;
+  --2: #e7e5e4;
+  --3: #d6d3d1;
+  --4: #a8a29e;
+  --5: #78716c;
+  --6: #57534e;
+  --7: #44403c;
+  --8: #292524;
+  --9: #1c1917;
 }

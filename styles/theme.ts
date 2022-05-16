@@ -15,7 +15,7 @@ let theme: MantineThemeOverride = {
   },
   colorScheme: "dark",
   colors: {
-    dark: ["#c2870a", "#a39e98", "#8c8fa3", "#666980", "#4d4f66", "#34354a", "#1e1e1e", "#27282d", "#01010a", "#01010a"],
+    dark: ["#fafaf9", "#f5f5f4", "#e7e5e4", "#d6d3d1", "#a8a29e", "#78716c", "#57534e", "#44403c", "#292524", "#1c1917"],
   },
 };
 
