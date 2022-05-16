@@ -1,7 +1,7 @@
 import { Code, Table, Tooltip, TextInput, Container, Box, Select, Text, Pagination, useMantineTheme } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import React, { useEffect, useMemo, useState, useRef } from "react";
-import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useExpanded } from "react-table";
+import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useExpanded, Column } from "react-table";
 import { ChevronDown, ChevronRight, Search } from "tabler-icons-react";
 
 interface StaticTableProps {
@@ -23,7 +23,7 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder={`${count} records...`}
+        placeholder={`${count} logs...`}
         size={"xl"}
         icon={<Search />}
       />
@@ -53,30 +53,31 @@ const StaticTable = (props: StaticTableProps) => {
   }, [props.logs]);
 
   const columns = useMemo(
-    () => [
-      {
-        Header: () => null,
-        id: "expander",
-        Cell: ({ row }) => {
-          return (
-            // Use Cell to render an expander for each row.
-            // We can use the getToggleRowExpandedProps prop-getter
-            // to build the expander.
-            <span {...row.getToggleRowExpandedProps()}>
-              {row.isExpanded ? <ChevronDown color={theme.colors.green[5]} /> : <ChevronRight color={theme.colors.blue[5]} size={25} />}
-            </span>
-          );
+    () =>
+      [
+        {
+          Header: () => null,
+          id: "expander",
+          Cell: ({ row }) => {
+            return (
+              // Use Cell to render an expander for each row.
+              // We can use the getToggleRowExpandedProps prop-getter
+              // to build the expander.
+              <span {...row.getToggleRowExpandedProps()}>
+                {row.isExpanded ? <ChevronDown color={theme.colors.green[5]} /> : <ChevronRight color={theme.colors.blue[5]} size={25} />}
+              </span>
+            );
+          },
         },
-      },
-      {
-        Header: "Time",
-        accessor: "time",
-      },
-      {
-        Header: "Message",
-        accessor: "msg",
-      },
-    ],
+        {
+          Header: "Time",
+          accessor: "time",
+        },
+        {
+          Header: "Message",
+          accessor: "msg",
+        },
+      ] as Column<Object>[],
     []
   );
 
