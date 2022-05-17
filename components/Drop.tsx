@@ -90,7 +90,7 @@ function Drop(props: DropProps) {
   };
 
   return (
-    <Dropzone onDrop={handleDrop} onReject={(files) => console.log("rejected files", files)} maxSize={3 * 1024 ** 2} multiple={false}>
+    <Dropzone onDrop={handleDrop} onReject={(files) => console.log("rejected files", files)} maxSize={7 * 1024 ** 2} multiple={false}>
       {(status) => dropzoneChildren(status, theme)}
     </Dropzone>
   );
